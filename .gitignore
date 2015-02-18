@@ -1,0 +1,16 @@
+[Pp]recompile/
+[Pp]recompile_build/
+[Oo]bj/
+[Bb]in/
+[Dd]ebug*/
+[Rr]elease*/
+[Dd]eploy/
+*.mdf
+*.ldf
+*.user
+*.suo
+*.log
+*.vsp
+*.vsmdi
+*.psess
+*.DS_Store
