@@ -28,12 +28,14 @@ namespace MatchMaker.Core
     {
         private ReaderWriterLockSlim _syncLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-        private List<T> _population = new List<T>();
+        private Random _randomProvider = new Random();
+
+        private List<T> _available = new List<T>();
         private List<T> _leased = new List<T>();
 
         public Int32 Count
         {
-            get { return _population.Count; }
+            get { return _available.Count + _leased.Count; }
         }
 
         public Int32 LeasedCount
@@ -46,7 +48,7 @@ namespace MatchMaker.Core
             _syncLock.EnterWriteLock();
             try
             {
-                _population.Add(item);
+                _available.Add(item);
             }
             finally
             {
@@ -61,11 +63,12 @@ namespace MatchMaker.Core
             {
                 if (!_isLeased(itemPredicate) && _exists(itemPredicate))
                 {
-                    var item = _population.FirstOrDefault(_ => itemPredicate(_));
+                    var item = _available.FirstOrDefault(_ => itemPredicate(_));
                     _syncLock.EnterWriteLock();
                     try
                     {
                         _leased.Add(item);
+                        _available.Remove(item);
                     }
                     finally
                     {
@@ -79,6 +82,22 @@ namespace MatchMaker.Core
                 _syncLock.ExitUpgradeableReadLock();
             }
             return null;
+        }
+
+        public PoolLease<T> LeaseRandom()
+        {
+            _syncLock.EnterWriteLock();
+            try
+            {
+                var random_index = _randomProvider.Next(_available.Count);
+                var item = _available[random_index];
+                _available.Remove(item);
+                _leased.Add(item);
+            }
+            finally
+            {
+                _syncLock.ExitWriteLock();
+            }
         }
 
         public void Return(T item)

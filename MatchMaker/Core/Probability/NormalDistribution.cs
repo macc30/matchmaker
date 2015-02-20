@@ -19,7 +19,12 @@ namespace MatchMaker.Core.Probability
 
         public override double GetValue()
         {
-            return StandardDeviation * _getValueBetween(1, 2.0 * MeanValue) + MeanValue;
+            var uniform1 = _getUniformValue();
+            var uniform2 = _getUniformValue();
+
+            var standard_normal = Math.Sqrt(-2.0 * Math.Log(uniform1)) * Math.Sin(2.0 * Math.PI * uniform2);
+
+            return this.MeanValue + this.StandardDeviation * standard_normal;
         }
     }
 }
