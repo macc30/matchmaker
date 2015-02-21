@@ -10,6 +10,11 @@ namespace MatchMaker
     {
         static void Main(string[] args)
         {
+            TankDb.Current.Initialize();
+
+            var simulation = new Simulation(1000, 100);
+            simulation.LogStream = Console.OpenStandardOutput();
+            simulation.Start();
         }
     }
 }

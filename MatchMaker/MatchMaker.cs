@@ -14,6 +14,21 @@ namespace MatchMaker
         private ReaderWriterLockSlim _queueLock = new ReaderWriterLockSlim();
         private Queue<PlayerTankSelection> _playerQueue = new Queue<PlayerTankSelection>();
 
+        public Int32 QueueDepth
+        {
+            get
+            {
+                _queueLock.EnterReadLock();
+                try
+                {
+                    return _playerQueue.Count;
+                }
+                finally
+                {
+                    _queueLock.ExitReadLock();
+                }
+            }
+        }
         public void QueuePlayer(PlayerTankSelection player)
         {
             _queueLock.EnterWriteLock();
@@ -29,7 +44,8 @@ namespace MatchMaker
 
         public IEnumerable<Match> TryFormMatches()
         {
-            return new List<Match>();
+            return null;
+            //return new List<Match>();
         }
 
         private void _formMatch()

@@ -18,7 +18,7 @@ namespace MatchMaker.Models
     public class Match
     {
         public const Int32 MatchTimeMean = 7 * 60 * 1000;
-        public const Int32 MatchTimeStdDev = (int)Math.Sqrt(5 * 60 * 1000);
+        public static Int32 MatchTimeStdDev { get { return (int)Math.Sqrt(5 * 60 * 1000); } }
 
         public Match()
         {
@@ -40,12 +40,29 @@ namespace MatchMaker.Models
 
         public MatchOutcome? Outcome { get; set; }
 
-        private long _start_time;
-        private long _end_time;
+        private long _start_time = 0;
+        private long _end_time = 0;
 
         public void Start(long start_time)
         {
             var normal = new NormalDistribution(7 * 60 * 1000, 547);
+            _start_time = start_time;
+            _end_time = _start_time + (long)normal.GetValue(); //random match time ...
+        }
+
+        public bool TryEnd(long current_time)
+        {
+            if (current_time >= _end_time)
+            {
+                //figure out outcome?
+
+                //drain both team pools.
+                TeamA.Dispose();
+                TeamB.Dispose();
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -35,7 +35,15 @@ namespace MatchMaker.Core
 
         public Int32 Count
         {
-            get { return _available.Count + _leased.Count; }
+            get
+            {
+                return AvailableCount + LeasedCount;
+            }
+        }
+
+        public Int32 AvailableCount
+        {
+            get { return _available.Count; }
         }
 
         public Int32 LeasedCount
@@ -61,7 +69,12 @@ namespace MatchMaker.Core
             _syncLock.EnterUpgradeableReadLock();
             try
             {
-                if (!_isLeased(itemPredicate) && _exists(itemPredicate))
+                if (AvailableCount == 0)
+                {
+                    return null;
+                }
+
+                if (!IsLeased(itemPredicate) && IsAvailable(itemPredicate))
                 {
                     var item = _available.FirstOrDefault(_ => itemPredicate(_));
                     _syncLock.EnterWriteLock();
@@ -86,17 +99,32 @@ namespace MatchMaker.Core
 
         public PoolLease<T> LeaseRandom()
         {
-            _syncLock.EnterWriteLock();
+            _syncLock.EnterUpgradeableReadLock();
             try
             {
-                var random_index = _randomProvider.Next(_available.Count);
-                var item = _available[random_index];
-                _available.Remove(item);
-                _leased.Add(item);
+                if (AvailableCount == 0)
+                {
+                    return null;
+                }
+
+                _syncLock.EnterWriteLock();
+                try
+                {
+                    var random_index = _randomProvider.Next(_available.Count);
+                    var item = _available[random_index];
+                    _available.Remove(item);
+                    _leased.Add(item);
+
+                    return new PoolLease<T>(item, this);
+                }
+                finally
+                {
+                    _syncLock.ExitWriteLock();
+                }
             }
             finally
             {
-                _syncLock.ExitWriteLock();
+                _syncLock.ExitUpgradeableReadLock();
             }
         }
 
@@ -107,13 +135,14 @@ namespace MatchMaker.Core
             _syncLock.EnterUpgradeableReadLock();
             try
             {
-                if (_isLeased(predicate) && _exists(predicate))
+                if (IsLeased(predicate))
                 {
                     var leased = _leased.FirstOrDefault(predicate);
                     _syncLock.EnterWriteLock();
                     try
                     {
                         _leased.Remove(leased);
+                        _available.Add(leased);
                     }
                     finally
                     {
@@ -127,14 +156,14 @@ namespace MatchMaker.Core
             }
         }
 
-        public bool _isLeased(Func<T, Boolean> itemPredicate)
+        public bool IsLeased(Func<T, Boolean> itemPredicate)
         {
             return _leased.Any(_ => itemPredicate(_));
         }
 
-        public bool _exists(Func<T, Boolean> itemPredicate)
+        public bool IsAvailable(Func<T, Boolean> itemPredicate)
         {
-            return _population.Any(_ => itemPredicate(_));
+            return _available.Any(_ => itemPredicate(_)); 
         }
     }
 }

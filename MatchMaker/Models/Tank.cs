@@ -10,6 +10,11 @@ namespace MatchMaker.Models
 {
     public class Tank
     {
+        public Tank()
+        {
+            this.Id = System.Guid.NewGuid();
+        }
+
         public Guid Id { get; set;  }
 
         public ITankClass TankClass { get; set; }
@@ -21,6 +26,7 @@ namespace MatchMaker.Models
         public Int32 Tier { get; set; }
 
         public Double Popularity { get; set; }
-        public Int32 ExpectedDamage { get; set; }
+
+        public Double ExpectedDamage { get; set; }
     }
 }

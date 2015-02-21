@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MatchMaker.Models
 {
-    public class Team
+    public class Team : IDisposable
     {
         public List<PlayerTankSelection> Members { get; set; }
 
@@ -15,5 +15,13 @@ namespace MatchMaker.Models
         public Int32 LightCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.Light).Count(); } }
         public Int32 TankDestroyerCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.TankDestroyer).Count(); } }
         public Int32 SPGCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.SPG).Count(); } }
+
+        public void Dispose()
+        {
+            foreach (var player in Members)
+            {
+                player.Dispose();
+            }
+        }
     }
 }
