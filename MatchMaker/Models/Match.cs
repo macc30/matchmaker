@@ -27,7 +27,7 @@ namespace MatchMaker.Models
             this.TeamB = new Team();
         }
 
-        public Int32 EllapsedTime { get; set; }
+        public long EllapsedTime { get; set; }
 
         public Guid Id { get; set; }
         public Int32 Tier { get; set; }
@@ -35,8 +35,8 @@ namespace MatchMaker.Models
         public Team TeamA { get; set; }
         public Team TeamB { get; set; }
 
-        public Int32 TeamAHealthPool { get; set; }
-        public Int32 TeamBHealthPool { get; set; }
+        public Int32 TeamAHealthPool { get { return TeamA.Members.Sum(_ => _.Tank.Health); } }
+        public Int32 TeamBHealthPool { get { return TeamB.Members.Sum(_ => _.Tank.Health); } }
 
         public MatchOutcome? Outcome { get; set; }
 
@@ -45,24 +45,25 @@ namespace MatchMaker.Models
 
         public void Start(long start_time)
         {
-            var normal = new NormalDistribution(7 * 60 * 1000, 547);
+            var normal = new NormalDistribution(7 * Simulation.MS_PER_MINUTE, 547);
+            this.EllapsedTime = (long)normal.GetValue(); //random match time ...
+
             _start_time = start_time;
-            _end_time = _start_time + (long)normal.GetValue(); //random match time ...
+            _end_time = _start_time + this.EllapsedTime;
         }
 
-        public bool TryEnd(long current_time)
+        public bool CanEnd(long current_time)
         {
-            if (current_time >= _end_time)
-            {
-                //figure out outcome?
+            return current_time >= _end_time;
+        }
 
-                //drain both team pools.
-                TeamA.Dispose();
-                TeamB.Dispose();
-                return true;
-            }
+        public void End(long current_time)
+        {
+            //figure out outcome?
 
-            return false;
+            //drain both team pools.
+            TeamA.Dispose();
+            TeamB.Dispose();
         }
     }
 }

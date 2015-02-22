@@ -11,46 +11,52 @@ namespace MatchMaker
 {
     public class MatchMaker
     {
-        private ReaderWriterLockSlim _queueLock = new ReaderWriterLockSlim();
-        private Queue<PlayerTankSelection> _playerQueue = new Queue<PlayerTankSelection>();
+        public static class Rules
+        {
+            public const Int32 MAX_HEAVY = 7;
+            public const Int32 MAX_MEDIUM = 7;
+            public const Int32 MAX_LIGHT = 4;
+            public const Int32 MAX_TD = 7;
+            public const Int32 MAX_ARTY = 3;
+
+            public const Int32 MAX_TIER_SPREAD_LIGHT = 3;
+            public const Int32 MAX_TIER_SPREAD_MEDIUM = 2;
+            public const Int32 MAX_TIER_SPREAD_HEAVY = 2;
+            public const Int32 MAX_TIER_SPREAD_TD = 2;
+            public const Int32 MAX_TIER_SPREAD_ARTY = 2;
+        }
+
+        private List<PlayerTankSelection> _playerQueue = new List<PlayerTankSelection>();
+
+        /// <summary>
+        /// The method here is if a player has been in the queue > 30 secs, we bump them up to here.
+        /// </summary>
+        private List<PlayerTankSelection> _priorityQueue = new List<PlayerTankSelection>();
 
         public Int32 QueueDepth
         {
             get
             {
-                _queueLock.EnterReadLock();
-                try
-                {
-                    return _playerQueue.Count;
-                }
-                finally
-                {
-                    _queueLock.ExitReadLock();
-                }
+                return _playerQueue.Count;
             }
         }
         public void QueuePlayer(PlayerTankSelection player)
         {
-            _queueLock.EnterWriteLock();
-            try
-            {
-                _playerQueue.Enqueue(player);
-            }
-            finally
-            {
-                _queueLock.ExitWriteLock();
-            }
+            _playerQueue.Add(player);
         }
 
-        public IEnumerable<Match> TryFormMatches()
+        public Match TryFormMatch()
         {
-            return null;
-            //return new List<Match>();
-        }
+            if(QueueDepth < 30) //early elimination
+            {
+                return null;
+            }
 
-        private void _formMatch()
-        {
+            var trial_player = _playerQueue.OrderBy(_ => System.Guid.NewGuid()).First();
 
+
+
+            return match;
         }
     }
 }

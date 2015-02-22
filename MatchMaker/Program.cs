@@ -10,7 +10,21 @@ namespace MatchMaker
     {
         static void Main(string[] args)
         {
-            TankDb.Current.Initialize();
+            if(!System.IO.File.Exists("tanks.json"))
+            {
+                Console.Write("Fetching Tank Data ...");
+                TankDb.Current.InitializeFromWeb();
+                Console.WriteLine(" Done!");
+                Console.Write("Saving Tank Data ...");
+                TankDb.Current.SaveToFile("tanks.json");
+                Console.WriteLine(" Done!");
+            } 
+            else
+            {
+                Console.Write("Fetching Tank Data ...");
+                TankDb.Current.InitializeFromFile("tanks.json");
+                Console.WriteLine(" Done!");
+            }
 
             var simulation = new Simulation(1000, 100);
             simulation.LogStream = Console.OpenStandardOutput();

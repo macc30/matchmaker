@@ -10,11 +10,11 @@ namespace MatchMaker.Models
     {
         public List<PlayerTankSelection> Members { get; set; }
 
-        public Int32 HeavyCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.Heavy).Count(); } }
-        public Int32 MediumCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.Medium).Count(); } }
-        public Int32 LightCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.Light).Count(); } }
-        public Int32 TankDestroyerCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.TankDestroyer).Count(); } }
-        public Int32 SPGCount { get { return Members.Where(_ => _.Tank.TankClass.TankClass == TankClasses.TankClassId.SPG).Count(); } }
+        public Int32 HeavyCount { get { return Members.Where(_ => _.Tank.TankClass == TankClass.HeavyTank).Count(); } }
+        public Int32 MediumCount { get { return Members.Where(_ => _.Tank.TankClass == TankClass.MediumTank).Count(); } }
+        public Int32 LightCount { get { return Members.Where(_ => _.Tank.TankClass == TankClass.LightTank).Count(); } }
+        public Int32 TankDestroyerCount { get { return Members.Where(_ => _.Tank.TankClass == TankClass.TankDestroyer).Count(); } }
+        public Int32 SPGCount { get { return Members.Where(_ => _.Tank.TankClass == TankClass.Artillery).Count(); } }
 
         public void Dispose()
         {

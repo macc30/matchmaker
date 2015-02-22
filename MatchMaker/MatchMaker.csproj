@@ -65,18 +65,14 @@
     <Compile Include="Core\Probability\NormalDistribution.cs" />
     <Compile Include="Core\Probability\ProbabilityDistribution.cs" />
     <Compile Include="MatchMaker.cs" />
+    <Compile Include="Models\Api\VBAddict.cs" />
+    <Compile Include="Models\Api\Wargaming.cs" />
     <Compile Include="Models\Match.cs" />
     <Compile Include="Models\Nation.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\PlayerTankSelection.cs" />
     <Compile Include="Models\Tank.cs" />
-    <Compile Include="Models\TankClasses\Artillery.cs" />
-    <Compile Include="Models\TankClasses\HeavyTank.cs" />
-    <Compile Include="Models\TankClasses\ITankClass.cs" />
-    <Compile Include="Models\TankClasses\LightTank.cs" />
-    <Compile Include="Models\TankClasses\MediumTank.cs" />
-    <Compile Include="Models\TankClasses\TankClassId.cs" />
-    <Compile Include="Models\TankClasses\TankDestroyer.cs" />
+    <Compile Include="Models\TankClass.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +83,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="tanks.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

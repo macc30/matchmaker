@@ -60,37 +60,37 @@ namespace MatchMaker
             }
         }
 
-        private const double ms_per_second = 1000.0;
-        private const double ms_per_minute = 60.0 * 1000.0;
-        private const double ms_per_hour = 60.0 * 60.0 * 1000.0;
+        public static double MS_PER_SECOND = 1000.0;
+        public static double MS_PER_MINUTE = 60.0 * 1000.0;
+        public static double MS_PER_HOUR = 60.0 * 60.0 * 1000.0;
 
         private static string _formatClockTime(long clock_value)
         {
-            if (clock_value < ms_per_second)
+            if (clock_value < MS_PER_SECOND)
             {
                 return String.Format("{0} ms", clock_value);
             }
-            else if (clock_value < ms_per_minute)
+            else if (clock_value < MS_PER_MINUTE)
             {
                 return String.Format("{0}.{1} sec", Math.Floor((double)clock_value / 1000.0), clock_value % 1000);
             }
-            else if (clock_value < ms_per_hour)
+            else if (clock_value < MS_PER_HOUR)
             {
-                var minutes = Math.Floor((clock_value) / ms_per_minute);
-                var minutes_in_ms = minutes * ms_per_minute;
-                var seconds = Math.Floor((clock_value - minutes_in_ms) / ms_per_second);
-                var seconds_in_ms = seconds * ms_per_second;
+                var minutes = Math.Floor((clock_value) / MS_PER_MINUTE);
+                var minutes_in_ms = minutes * MS_PER_MINUTE;
+                var seconds = Math.Floor((clock_value - minutes_in_ms) / MS_PER_SECOND);
+                var seconds_in_ms = seconds * MS_PER_SECOND;
                 var ms = clock_value - minutes_in_ms - seconds_in_ms;
                 return String.Format("{0} min {1}.{2} sec", minutes, seconds, ms);
             }
             else
             {
-                var hours = Math.Floor((double)clock_value / ms_per_hour);
-                var hours_in_ms = hours * ms_per_hour;
-                var minutes = Math.Floor((clock_value - hours_in_ms) / ms_per_minute);
-                var minutes_in_ms = minutes * ms_per_minute;
-                var seconds = Math.Floor((clock_value - hours_in_ms - minutes_in_ms) / ms_per_second);
-                var seconds_in_ms = seconds * ms_per_second;
+                var hours = Math.Floor((double)clock_value / MS_PER_HOUR);
+                var hours_in_ms = hours * MS_PER_HOUR;
+                var minutes = Math.Floor((clock_value - hours_in_ms) / MS_PER_MINUTE);
+                var minutes_in_ms = minutes * MS_PER_MINUTE;
+                var seconds = Math.Floor((clock_value - hours_in_ms - minutes_in_ms) / MS_PER_SECOND);
+                var seconds_in_ms = seconds * MS_PER_SECOND;
                 var ms = clock_value - hours_in_ms - minutes_in_ms - seconds_in_ms;
 
                 return String.Format("{0} hr {1} min {2}.{3} sec", hours, minutes, seconds, ms);
@@ -140,7 +140,6 @@ namespace MatchMaker
 
                         //figure out what tank to randomly take as well ...
                         _match_maker.QueuePlayer(entry);
-                        Log(String.Format("{0} Queued", entry.ToString()));
                     }
                 }
             }
@@ -162,30 +161,21 @@ namespace MatchMaker
                 //schedule player arrivals
                 _queueArrivals();
 
-                Log(String.Format("Queue Depth: {0}", _match_maker.QueueDepth));
+                var newMatch = _match_maker.TryFormMatch();
 
-                var newMatches = _match_maker.TryFormMatches();
-
-                if (newMatches != null)
+                if (newMatch != null)
                 {
-                    foreach (var match in newMatches)
-                    {
-                        //start matches ...
-                    }
+                    newMatch.Start(_clock);
                 }
 
                 foreach (var inProgress in _inProgress)
                 {
-                    //check to see if the match is done ...
-                    //if so, release the players back to the pool
-                    //record stats.
-                    if(inProgress.TryEnd(_clock))
+                    if(inProgress.CanEnd(_clock))
                     {
                         //compile stats etc.
                     }
                 }
 
-                System.Threading.Thread.Sleep((int)_step);
                 _clock = _clock + _step;
             }
         }
