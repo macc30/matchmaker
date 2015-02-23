@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatchMaker.Algorithms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,8 @@ namespace MatchMaker
                 Console.WriteLine(" Done!");
             }
 
-            var simulation = new Simulation(1000, 100);
+            var simulation = new Simulation<InOrderCreation>(1000, 100);
+            simulation.RealTime = false;
             simulation.LogStream = Console.OpenStandardOutput();
             simulation.Start();
         }

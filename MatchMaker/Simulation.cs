@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MatchMaker.Core.Probability;
 using System.IO;
+using MatchMaker.Algorithms;
 
 namespace MatchMaker
 {
-    public class Simulation
+    public class Simulation<T> where T : MatchMakerBase, new()
     {
         private static Random _randomProvider = null;
         public static Random RandomProvider
@@ -102,6 +103,8 @@ namespace MatchMaker
 
         private int _matchesPlayed = 0;
 
+        public Boolean RealTime { get; set; }
+
         public double AveragePlayersPerMinute { get; private set; }
         public int PlayerPopulationCount { get; private set; }
         public int MaximumMatchCount { get; private set; }
@@ -109,7 +112,7 @@ namespace MatchMaker
         private List<Match> _inProgress = new List<Match>();
         private Pool<Player> _playerPool = new Pool<Player>();
 
-        private MatchMaker _match_maker = new MatchMaker();
+        private MatchMakerBase _match_maker = null;
 
         private void _fillPlayerPool()
         {
@@ -151,29 +154,45 @@ namespace MatchMaker
             {
                 return;
             }
-    
-            _match_maker = new MatchMaker();
+
+            _match_maker = new T();
 
             _fillPlayerPool();
 
             while (_matchesPlayed < MaximumMatchCount)
             {
-                //schedule player arrivals
+                var queue_depth = _match_maker.QueueDepth;
                 _queueArrivals();
+                var new_queue_depth = _match_maker.QueueDepth;
 
                 var newMatch = _match_maker.TryFormMatch();
 
                 if (newMatch != null)
                 {
                     newMatch.Start(_clock);
+                    _inProgress.Add(newMatch);
+                    Log(newMatch.ToString());
                 }
 
+                var to_remove_from_inprogress = new List<Match>();
                 foreach (var inProgress in _inProgress)
                 {
                     if(inProgress.CanEnd(_clock))
                     {
-                        //compile stats etc.
+                        inProgress.End(_clock);
+                        to_remove_from_inprogress.Add(inProgress);
+                        _matchesPlayed++;
                     }
+                }
+
+                foreach (var to_remove in to_remove_from_inprogress)
+                {
+                    _inProgress.Remove(to_remove);
+                }
+
+                if (RealTime)
+                {
+                    System.Threading.Thread.Sleep((int)_step);
                 }
 
                 _clock = _clock + _step;

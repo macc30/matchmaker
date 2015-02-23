@@ -60,11 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\InOrderCreation.cs" />
     <Compile Include="Core\Pool.cs" />
     <Compile Include="Core\Probability\ExponentialDistribution.cs" />
     <Compile Include="Core\Probability\NormalDistribution.cs" />
     <Compile Include="Core\Probability\ProbabilityDistribution.cs" />
-    <Compile Include="MatchMaker.cs" />
+    <Compile Include="Algorithms\MatchMakerBase.cs" />
     <Compile Include="Models\Api\VBAddict.cs" />
     <Compile Include="Models\Api\Wargaming.cs" />
     <Compile Include="Models\Match.cs" />

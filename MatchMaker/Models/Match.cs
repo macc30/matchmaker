@@ -38,6 +38,8 @@ namespace MatchMaker.Models
         public Int32 TeamAHealthPool { get { return TeamA.Members.Sum(_ => _.Tank.Health); } }
         public Int32 TeamBHealthPool { get { return TeamB.Members.Sum(_ => _.Tank.Health); } }
 
+        public Int32 TotalPlayers { get { return TeamA.Members.Count + TeamB.Members.Count; } }
+
         public MatchOutcome? Outcome { get; set; }
 
         private long _start_time = 0;
@@ -45,7 +47,7 @@ namespace MatchMaker.Models
 
         public void Start(long start_time)
         {
-            var normal = new NormalDistribution(7 * Simulation.MS_PER_MINUTE, 547);
+            var normal = new NormalDistribution(7 * (60.0 * 1000.0), 547);
             this.EllapsedTime = (long)normal.GetValue(); //random match time ...
 
             _start_time = start_time;
@@ -59,11 +61,24 @@ namespace MatchMaker.Models
 
         public void End(long current_time)
         {
-            //figure out outcome?
+            _end_time = current_time;
 
-            //drain both team pools.
+            TeamA.SavePlayedMatchForMembers(this);
+            TeamB.SavePlayedMatchForMembers(this);
+
             TeamA.Dispose();
             TeamB.Dispose();
+        }
+
+        public override string ToString()
+        {
+            var buffer = new System.Text.StringBuilder();
+            buffer.AppendFormat("Match: {0} :: (", this.Id.ToString("N"));
+            buffer.Append(TeamA.ToString());
+            buffer.Append(") vs. (");
+            buffer.Append(TeamB.ToString());
+            buffer.Append(")");
+            return buffer.ToString();   
         }
     }
 }

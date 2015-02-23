@@ -6,6 +6,38 @@ namespace MatchMaker.Core
 {
     public static class Extensions
     {
+        public static T PopFront<T>(this List<T> values)
+        {
+            if (values.Any())
+            {
+                var value = values[0];
+                values.RemoveAt(0);
+                return value;
+            }
+            return default(T);
+        }
+
+        public static T PeekFront<T>(this List<T> values)
+        {
+            if (values.Any())
+            {
+                var value = values[0];
+                return value;
+            }
+            return default(T);
+        }
+
+        public static T PopBack<T>(this List<T> values)
+        {
+            if (values.Any())
+            {
+                var value = values.Last();
+                values.RemoveAt(values.Count - 1);
+                return value;
+            }
+            return default(T);
+        }
+
         public static void Times(this Int32 value, Action block)
         {
             for (int x = 0; x < value; x++)

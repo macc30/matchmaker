@@ -8,10 +8,10 @@ namespace MatchMaker.Models
 {
     public enum TankClass
     {
-        LightTank = 1,
-        MediumTank = 2,
-        HeavyTank = 3,
-        TankDestroyer = 4,
-        Artillery = 5
+        HeavyTank = 5,
+        MediumTank = 4,
+        TankDestroyer = 3,
+        LightTank = 2,
+        Artillery = 1
     }
 }
