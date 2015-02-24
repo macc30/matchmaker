@@ -56,7 +56,7 @@ namespace MatchMaker
                     _logWriter = new StreamWriter(_logStream);
                 }
 
-                _logWriter.WriteLine(String.Format("{0,22} :: {1}", _formatClockTime(_clock), message));
+                _logWriter.WriteLine(String.Format("{0}: {1}", _formatClockTime(_clock), message));
                 _logWriter.Flush();
             }
         }

@@ -73,11 +73,9 @@ namespace MatchMaker.Models
         public override string ToString()
         {
             var buffer = new System.Text.StringBuilder();
-            buffer.AppendFormat("Match: {0} :: (", this.Id.ToString("N"));
             buffer.Append(TeamA.ToString());
-            buffer.Append(") vs. (");
+            buffer.Append(" vs. ");
             buffer.Append(TeamB.ToString());
-            buffer.Append(")");
             return buffer.ToString();   
         }
     }
