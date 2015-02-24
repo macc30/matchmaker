@@ -43,7 +43,16 @@ namespace MatchMaker.Models
         public MatchOutcome? Outcome { get; set; }
 
         private long _start_time = 0;
+        public long StartTime
+        {
+            get { return _start_time; }
+        }
+
         private long _end_time = 0;
+        public long EndTime 
+        {
+            get { return _end_time; }
+        }
 
         public void Start(long start_time)
         {

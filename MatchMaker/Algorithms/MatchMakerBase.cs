@@ -81,28 +81,28 @@ namespace MatchMaker.Algorithms
                     {
                         var light_count = team.LightCount;
                         var spread_ok = tier_spread <= Rules.Spreads[TankClass.LightTank];
-                        var count_ok = light_count <= Rules.MaximumPerTeam[TankClass.LightTank];
+                        var count_ok = light_count <= Rules.MaximumPerTeam[TankClass.LightTank] || team_tier < 4;
                         return spread_ok && count_ok;
                     }
                 case TankClass.MediumTank:
                     {
                         var medium_count = team.MediumCount;
                         var spread_ok = tier_spread <= Rules.Spreads[TankClass.MediumTank];
-                        var count_ok = medium_count <= Rules.MaximumPerTeam[TankClass.MediumTank];
+                        var count_ok = medium_count <= Rules.MaximumPerTeam[TankClass.MediumTank] || team_tier < 4;
                         return spread_ok && count_ok;
                     }
                 case TankClass.HeavyTank:
                     {
                         var heavy_count = team.HeavyCount;
                         var spread_ok = tier_spread <= Rules.Spreads[TankClass.HeavyTank];
-                        var count_ok = heavy_count <= Rules.MaximumPerTeam[TankClass.HeavyTank];
+                        var count_ok = heavy_count <= Rules.MaximumPerTeam[TankClass.HeavyTank] || team_tier < 4;
                         return spread_ok && count_ok;
                     }
                 case TankClass.TankDestroyer:
                     {
                         var td_count = team.TankDestroyerCount;
                         var spread_ok = tier_spread <= Rules.Spreads[TankClass.TankDestroyer];
-                        var count_ok = td_count <= Rules.MaximumPerTeam[TankClass.TankDestroyer];
+                        var count_ok = td_count <= Rules.MaximumPerTeam[TankClass.TankDestroyer] || team_tier < 4;
                         return spread_ok && count_ok;
                     }
                 case TankClass.Artillery:

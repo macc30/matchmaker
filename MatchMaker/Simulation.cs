@@ -323,7 +323,8 @@ namespace MatchMaker
                         tier_placements.Add(tier_placement);
                     }
 
-                    wait_times.Add(Math.Abs(player.ArrivalTime - player.MatchStartTime));
+                    var queue_time = Math.Abs(player.ArrivalTime - match.StartTime);
+                    wait_times.Add(queue_time);
                 }
                 foreach (var player in match.TeamB.Members)
                 {
@@ -337,7 +338,8 @@ namespace MatchMaker
                         tier_placements.Add(tier_placement);
                     }
 
-                    wait_times.Add(Math.Abs(player.ArrivalTime - player.MatchStartTime));
+                    var queue_time = Math.Abs(player.ArrivalTime - player.MatchStartTime);
+                    wait_times.Add(queue_time);
                 }
             }
 
