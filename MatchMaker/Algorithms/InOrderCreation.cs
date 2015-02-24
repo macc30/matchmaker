@@ -44,6 +44,10 @@ namespace MatchMaker.Algorithms
                         added.Add(additional_player);
                     }
                 }
+                else
+                {
+                    break; //whoops.
+                }
             }
 
             if (IsComplete(match))
@@ -61,6 +65,79 @@ namespace MatchMaker.Algorithms
                 _playerQueue.PushBack(old_basis);
                 return null;
             }
+        }
+
+        protected bool CanAddPlayer(Match match, Team team, PlayerTankSelection player)
+        {
+            var team_tier = match.Tier;
+            var player_tier = player.Tank.Tier;
+
+            var tier_spread = Math.Abs(team_tier - player_tier);
+
+            var largest_spread = Rules.Spreads.Values.Max();
+
+            if (player.Tank.Tier > match.Tier)
+            {
+                return false;
+            }
+
+            if (tier_spread > largest_spread) //auto dq crazy spreads.
+            {
+                return false;
+            }
+
+            if (match.Tier < 3)
+            {
+                if (player.Tank.TankClass == TankClass.Artillery)
+                {
+                    return player.Tank.Tier < 3 && team.ArtilleryCount < 2;
+                }
+                else
+                {
+                    return player.Tank.Tier < 3;
+                }
+            }
+
+            switch (player.Tank.TankClass)
+            {
+                case TankClass.LightTank:
+                    {
+                        var light_count = team.LightCount;
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.LightTank];
+                        var count_ok = light_count <= Rules.MaximumPerTeam[TankClass.LightTank];
+                        return spread_ok && count_ok;
+                    }
+                case TankClass.MediumTank:
+                    {
+                        var medium_count = team.MediumCount;
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.MediumTank];
+                        var count_ok = medium_count <= Rules.MaximumPerTeam[TankClass.MediumTank];
+                        return spread_ok && count_ok;
+                    }
+                case TankClass.HeavyTank:
+                    {
+                        var heavy_count = team.HeavyCount;
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.HeavyTank];
+                        var count_ok = heavy_count <= Rules.MaximumPerTeam[TankClass.HeavyTank];
+                        return spread_ok && count_ok;
+                    }
+                case TankClass.TankDestroyer:
+                    {
+                        var td_count = team.TankDestroyerCount;
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.TankDestroyer];
+                        var count_ok = td_count <= Rules.MaximumPerTeam[TankClass.TankDestroyer];
+                        return spread_ok && count_ok;
+                    }
+                case TankClass.Artillery:
+                    {
+                        var arty_count = team.ArtilleryCount;
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.Artillery];
+                        var count_ok = arty_count <= Rules.MaximumPerTeam[TankClass.Artillery];
+                        return spread_ok && count_ok;
+                    }
+            }
+
+            return false;
         }
     }
 }

@@ -170,7 +170,9 @@ namespace MatchMaker
 
         private void _queueArrivals()
         {
-            var exp = new ExponentialDistribution(0.001); //TODO: going to need to be determined by the # of players, the average length of game etc.
+            var average_time_between_arrivals = 0.03125 * 1000; //every 32nd of a second
+
+            var exp = new ExponentialDistribution(1.0 / average_time_between_arrivals); //TODO: going to need to be determined by the # of players, the average length of game etc.
 
             var arrival_time = _clock;
             while (arrival_time < _clock + _step)
@@ -223,7 +225,7 @@ namespace MatchMaker
                         if (_match_maker.PlayerQueue.Any())
                         {
                             var average_wait_msec = (long)_match_maker.PlayerQueue.Average(_ => Math.Abs(_.ArrivalTime - _clock));
-                            Log(String.Format("Players in Queue: {0}, Average Wait Time: {1}", players_in_queue, FormatClockTime(average_wait_msec)));
+                            Log(String.Format("Players in Queue: {0}, Average Wait Time: {1}, Available Player Pool Size: {2}", players_in_queue, FormatClockTime(average_wait_msec), _playerPool.AvailableCount));
                         }
                         else
                         {
