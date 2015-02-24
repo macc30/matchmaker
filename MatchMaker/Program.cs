@@ -28,7 +28,7 @@ namespace MatchMaker
             }
 
             var simulation = new Simulation<InOrderCreation>(23000, 100);
-            simulation.RealTime = true; ;
+            simulation.RealTime = false;
             simulation.LogStream = Console.OpenStandardOutput();
             simulation.Start();
         }

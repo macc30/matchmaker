@@ -43,13 +43,14 @@ namespace MatchMaker.Algorithms
                         if (CanAddPlayer(match, match.TeamA, additional_player))
                         {
                             match.TeamA.Members.Add(additional_player);
+                            added.Add(additional_player);
                         }
                     }
                     else if (CanAddPlayer(match, match.TeamB, additional_player))
                     {
                         match.TeamB.Members.Add(additional_player);
+                        added.Add(additional_player);
                     }
-                    added.Add(additional_player);
                 }
             }
 

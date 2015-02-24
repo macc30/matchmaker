@@ -161,9 +161,14 @@ namespace MatchMaker
 
             while (_matchesPlayed < MaximumMatchCount)
             {
-                var queue_depth = _match_maker.QueueDepth;
                 _queueArrivals();
-                var new_queue_depth = _match_maker.QueueDepth;
+
+                if (_clock % 5000 == 0)
+                {
+                    var players_in_queue = _match_maker.QueueDepth;
+                    var average_wait_msec = (long)_match_maker.PlayerQueue.Average(_ => Math.Abs(_.ArrivalTime - _clock));
+                    Log(String.Format("Players in Queue: {0}, Average Wait Time: {1}", players_in_queue, _formatClockTime(average_wait_msec)));
+                }
 
                 var newMatch = _match_maker.TryFormMatch();
 
