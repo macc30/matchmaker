@@ -30,6 +30,8 @@ namespace MatchMaker.Algorithms
                 {TankClass.Artillery, 2},
                 {TankClass.TankDestroyer, 2},
             };
+
+            public static Int32 MaxPerTier = 10;
         }
 
         protected List<PlayerTankSelection> _playerQueue = new List<PlayerTankSelection>();

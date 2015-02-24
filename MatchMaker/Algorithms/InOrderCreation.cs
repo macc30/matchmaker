@@ -98,12 +98,19 @@ namespace MatchMaker.Algorithms
                 }
             }
 
+            //assumes over tier 2 ...
+
+            if (team.Members.Count(_ => _.Tank.Tier == match.Tier) > Rules.MaxPerTier)
+            {
+                return false;
+            }
+
             switch (player.Tank.TankClass)
             {
                 case TankClass.LightTank:
                     {
                         var light_count = team.LightCount;
-                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.LightTank];
+                        var spread_ok = tier_spread > 0 && tier_spread <= Rules.Spreads[TankClass.LightTank];
                         var count_ok = light_count <= Rules.MaximumPerTeam[TankClass.LightTank];
                         return spread_ok && count_ok;
                     }

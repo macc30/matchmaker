@@ -27,8 +27,8 @@ namespace MatchMaker
                 Console.WriteLine(" Done!");
             }
 
-            var simulation = new Simulation<InOrderCreation>(23000, 100);
-            simulation.Verbocity = Simulation<InOrderCreation>.LogVerbocity.Verbose;
+            var simulation = new Simulation<InOrderCreation>(23000, 250);
+            simulation.Verbocity = Simulation<InOrderCreation>.LogVerbocity.Informational;
             simulation.RealTime = false;
             simulation.LogStream = Console.OpenStandardOutput();
             simulation.Start();
