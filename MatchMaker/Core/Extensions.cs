@@ -38,12 +38,40 @@ namespace MatchMaker.Core
             return default(T);
         }
 
+        public static void PushFront<T>(this List<T> values, T value)
+        {
+            values.Insert(0, value);
+        }
+
+        public static void PushBack<T>(this List<T> values, T value)
+        {
+            values.Add(value);
+        }
+
         public static void Times(this Int32 value, Action block)
         {
             for (int x = 0; x < value; x++)
             {
                 block();
             }
+        }
+
+        public static Double Variance(this IEnumerable<long> values)
+        {
+            if (values == null || !values.Any())
+                return default(long);
+
+            Double average = values.Average();
+            Double variance = 0.0d;
+            foreach (long value in values)
+            {
+                variance = variance +
+                    (
+                        (value - average) * (value - average)
+                    );
+            }
+
+            return variance / (Double)values.Count();
         }
 
         public static Double Variance(this IEnumerable<Double> values)
@@ -62,6 +90,14 @@ namespace MatchMaker.Core
             }
 
             return variance / (Double)values.Count();
+        }
+
+        public static Double StdDev(this IEnumerable<long> values)
+        {
+            if (values == null || !values.Any())
+                return default(long);
+
+            return System.Math.Sqrt(Variance(values));
         }
 
         public static Double StdDev(this IEnumerable<Double> values)

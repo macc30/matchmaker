@@ -17,7 +17,7 @@ namespace MatchMaker.Algorithms
             {
                 {TankClass.LightTank, 5},
                 {TankClass.MediumTank, 7},
-                {TankClass.HeavyTank, 7},
+                {TankClass.HeavyTank, 8},
                 {TankClass.Artillery, 3},
                 {TankClass.TankDestroyer, 7},
             };
@@ -65,6 +65,11 @@ namespace MatchMaker.Algorithms
 
             var largest_spread = Rules.Spreads.Values.Max();
 
+            if (player.Tank.Tier > match.Tier)
+            {
+                return false;
+            }
+
             if (tier_spread > largest_spread) //auto dq crazy spreads.
             {
                 return false;
@@ -75,35 +80,35 @@ namespace MatchMaker.Algorithms
                 case TankClass.LightTank:
                     {
                         var light_count = team.LightCount;
-                        var spread_ok = tier_spread < Rules.Spreads[TankClass.LightTank];
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.LightTank];
                         var count_ok = light_count <= Rules.MaximumPerTeam[TankClass.LightTank];
                         return spread_ok && count_ok;
                     }
                 case TankClass.MediumTank:
                     {
                         var medium_count = team.MediumCount;
-                        var spread_ok = tier_spread < Rules.Spreads[TankClass.MediumTank];
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.MediumTank];
                         var count_ok = medium_count <= Rules.MaximumPerTeam[TankClass.MediumTank];
                         return spread_ok && count_ok;
                     }
                 case TankClass.HeavyTank:
                     {
                         var heavy_count = team.HeavyCount;
-                        var spread_ok = tier_spread < Rules.Spreads[TankClass.HeavyTank];
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.HeavyTank];
                         var count_ok = heavy_count <= Rules.MaximumPerTeam[TankClass.HeavyTank];
                         return spread_ok && count_ok;
                     }
                 case TankClass.TankDestroyer:
                     {
                         var td_count = team.TankDestroyerCount;
-                        var spread_ok = tier_spread < Rules.Spreads[TankClass.TankDestroyer];
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.TankDestroyer];
                         var count_ok = td_count <= Rules.MaximumPerTeam[TankClass.TankDestroyer];
                         return spread_ok && count_ok;
                     }
                 case TankClass.Artillery:
                     {
                         var arty_count = team.ArtilleryCount;
-                        var spread_ok = tier_spread < Rules.Spreads[TankClass.Artillery];
+                        var spread_ok = tier_spread <= Rules.Spreads[TankClass.Artillery];
                         var count_ok = arty_count <= Rules.MaximumPerTeam[TankClass.Artillery];
                         return spread_ok && count_ok;
                     }

@@ -100,9 +100,7 @@ namespace MatchMaker
 
         private Dictionary<Int32, ExpectedDamageEntry> _getExpectedDamage(String json)
         {
-            var dict = new Dictionary<Int32, ExpectedDamageEntry>();
             var data = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpectedDamageResponse>(json);
-
             return data.data.ToDictionary(_ => _.IDNum);
         }
 

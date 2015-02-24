@@ -17,16 +17,9 @@ namespace MatchMaker.Algorithms
                 return null;
             }
 
-            var basis_player = _playerQueue.PeekFront();
-
             var added = new List<PlayerTankSelection>();
 
-            while (basis_player.Tank.TankClass == TankClass.LightTank)
-            {
-                _playerQueue.Add(basis_player);
-                basis_player = _playerQueue.PopFront();
-            }
-
+            var basis_player = _playerQueue.PeekFront();
             added.Add(basis_player);
 
             var match = new Match();
@@ -35,7 +28,6 @@ namespace MatchMaker.Algorithms
 
             foreach (var additional_player in _playerQueue)
             {
-                //which team?
                 if (match.TotalPlayers < 30)
                 {
                     if (match.TeamA.Members.Count < 15)
@@ -65,6 +57,8 @@ namespace MatchMaker.Algorithms
             }
             else
             {
+                var old_basis = _playerQueue.PopFront();
+                _playerQueue.PushBack(old_basis);
                 return null;
             }
         }
