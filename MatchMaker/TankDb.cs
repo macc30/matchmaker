@@ -57,11 +57,6 @@ namespace MatchMaker
 
         private Dictionary<Int32, Tank> _tank_by_id_map = new Dictionary<Int32, Tank>();
 
-        public Tank RandomTank()
-        {
-            return Tanks.OrderBy(_ => System.Guid.NewGuid()).First();
-        }
-
         public void InitializeFromWeb()
         {
             var tank_list_json = _fetchJSONText(TANK_LIST_ENDPOINT);

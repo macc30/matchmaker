@@ -97,45 +97,8 @@ namespace MatchMaker
                     _logWriter = new StreamWriter(_logStream);
                 }
 
-                _logWriter.WriteLine(String.Format("{0}: {1}", FormatClockTime(_clock), message));
+                _logWriter.WriteLine(String.Format("{0}: {1}", _clock.ClockFormat(), message));
                 _logWriter.Flush();
-            }
-        }
-
-        public static double MS_PER_SECOND = 1000.0;
-        public static double MS_PER_MINUTE = 60.0 * 1000.0;
-        public static double MS_PER_HOUR = 60.0 * 60.0 * 1000.0;
-
-        public static string FormatClockTime(long clock_value)
-        {
-            if (clock_value < MS_PER_SECOND)
-            {
-                return String.Format("{0} ms", clock_value);
-            }
-            else if (clock_value < MS_PER_MINUTE)
-            {
-                return String.Format("{0}.{1} sec", Math.Floor((double)clock_value / 1000.0), clock_value % 1000);
-            }
-            else if (clock_value < MS_PER_HOUR)
-            {
-                var minutes = Math.Floor((clock_value) / MS_PER_MINUTE);
-                var minutes_in_ms = minutes * MS_PER_MINUTE;
-                var seconds = Math.Floor((clock_value - minutes_in_ms) / MS_PER_SECOND);
-                var seconds_in_ms = seconds * MS_PER_SECOND;
-                var ms = clock_value - minutes_in_ms - seconds_in_ms;
-                return String.Format("{0} min {1}.{2} sec", minutes, seconds, ms);
-            }
-            else
-            {
-                var hours = Math.Floor((double)clock_value / MS_PER_HOUR);
-                var hours_in_ms = hours * MS_PER_HOUR;
-                var minutes = Math.Floor((clock_value - hours_in_ms) / MS_PER_MINUTE);
-                var minutes_in_ms = minutes * MS_PER_MINUTE;
-                var seconds = Math.Floor((clock_value - hours_in_ms - minutes_in_ms) / MS_PER_SECOND);
-                var seconds_in_ms = seconds * MS_PER_SECOND;
-                var ms = clock_value - hours_in_ms - minutes_in_ms - seconds_in_ms;
-
-                return String.Format("{0} hr {1} min {2}.{3} sec", hours, minutes, seconds, ms);
             }
         }
 
@@ -170,7 +133,7 @@ namespace MatchMaker
 
         private void _queueArrivals()
         {
-            var average_time_between_arrivals = 0.03125 * 1000; //every 32nd of a second
+            var average_time_between_arrivals = (1.0 / 16.0) * 1000; //every 16th of a second
 
             var exp = new ExponentialDistribution(1.0 / average_time_between_arrivals); //TODO: going to need to be determined by the # of players, the average length of game etc.
 
@@ -187,7 +150,7 @@ namespace MatchMaker
                     {
                         var entry = new PlayerTankSelection() { ArrivalTime = arrival_time };
                         entry.Player = player_lease;
-                        entry.Tank = TankDb.Current.RandomTank();
+                        entry.Tank = TankDb.Current.Tanks.WeightedRandomSelection(_ => _.Popularity, randomProvider: _randomProvider);
 
                         //figure out what tank to randomly take as well ...
                         _match_maker.QueuePlayer(entry);
@@ -216,21 +179,21 @@ namespace MatchMaker
             {
                 _queueArrivals();
 
-                if ((int)Verbocity >= 1)
+                if (_clock % 5000 == 0)
                 {
-                    if (_clock % 5000 == 0)
+                    var players_in_queue = _match_maker.QueueDepth;
+                    _queueDepths.Add(players_in_queue);
+                    if (_match_maker.PlayerQueue.Any())
                     {
-                        var players_in_queue = _match_maker.QueueDepth;
-                        _queueDepths.Add(players_in_queue);
-                        if (_match_maker.PlayerQueue.Any())
+                        var average_wait_msec = (long)_match_maker.PlayerQueue.Average(_ => Math.Abs(_.ArrivalTime - _clock));
+                        if ((int)Verbocity >= 1)
                         {
-                            var average_wait_msec = (long)_match_maker.PlayerQueue.Average(_ => Math.Abs(_.ArrivalTime - _clock));
-                            Log(String.Format("Players in Queue: {0}, Average Wait Time: {1}, Available Player Pool Size: {2}", players_in_queue, FormatClockTime(average_wait_msec), _playerPool.AvailableCount));
+                            Log(String.Format("Players in Queue: {0}, Average Wait Time: {1}, Available Player Pool Size: {2}", players_in_queue, average_wait_msec.ClockFormat(), _playerPool.AvailableCount));
                         }
-                        else
-                        {
-                            Log("Players in Queue: 0, Average Wait Time: N/A");
-                        }
+                    }
+                    else if ((int)Verbocity >= 1)
+                    {
+                        Log("Players in Queue: 0, Average Wait Time: N/A");
                     }
                 }
 

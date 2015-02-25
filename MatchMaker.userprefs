@@ -1,16 +1,10 @@
 ﻿<Properties StartupItem="MatchMaker/MatchMaker.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MatchMaker/Algorithms/InOrderCreation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MatchMaker/Algorithms/Wargaming.cs">
     <Files>
-      <File FileName="MatchMaker.Test/ProbabilityTests.cs" Line="51" Column="51" />
-      <File FileName="MatchMaker/Simulation.cs" Line="89" Column="89" />
-      <File FileName="MatchMaker/Core/Pool.cs" Line="1" Column="1" />
-      <File FileName="MatchMaker/Program.cs" Line="55" Column="55" />
-      <File FileName="MatchMaker/Core/Probability/NormalDistribution.cs" Line="10" Column="10" NotebookId="1" />
-      <File FileName="MatchMaker/Models/Match.cs" Line="9" Column="9" NotebookId="1" />
-      <File FileName="MatchMaker/Models/Player.cs" Line="49" Column="49" NotebookId="1" />
-      <File FileName="MatchMaker/Algorithms/InOrderCreation.cs" Line="43" Column="43" NotebookId="1" />
-      <File FileName="MatchMaker/Algorithms/MatchMakerBase.cs" Line="49" Column="49" NotebookId="1" />
+      <File FileName="MatchMaker/Algorithms/Wargaming.cs" Line="11" Column="11" />
+      <File FileName="MatchMaker/Program.cs" Line="107" Column="107" />
+      <File FileName="MatchMaker/Simulation.cs" Line="178" Column="178" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

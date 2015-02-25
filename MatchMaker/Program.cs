@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MatchMaker.Core;
 
 namespace MatchMaker
 {
@@ -24,11 +25,12 @@ namespace MatchMaker
             {
                 Console.Write("Fetching Tank Data ...");
                 TankDb.Current.InitializeFromFile("tanks.json");
+                TankDb.Current.SaveToFile("tanks.json");
                 Console.WriteLine(" Done!");
             }
 
-            var simulation = new Simulation<InOrderCreation>(23000, 250);
-            simulation.Verbocity = Simulation<InOrderCreation>.LogVerbocity.Informational;
+            var simulation = new Simulation<Wargaming>(23000, 250);
+            simulation.Verbocity = Simulation<Wargaming>.LogVerbocity.Off;
             simulation.RealTime = false;
             simulation.LogStream = Console.OpenStandardOutput();
             simulation.Start();
@@ -46,8 +48,10 @@ namespace MatchMaker
             Console.WriteLine("Tier Placement Average (Lights): " + results.TierPlacementAverageLights.ToString());
             Console.WriteLine("              Queue Depth (Avg): " + results.QueueDepthAverage.ToString());
             Console.WriteLine();
-            Console.WriteLine("         Player Wait Time (Avg): " + Simulation<InOrderCreation>.FormatClockTime((long)results.WaitTimeAverage));
-            Console.WriteLine("      Player Wait Time (StdDev): " + Simulation<InOrderCreation>.FormatClockTime((long)results.WaitTimeStandardDeviation));
+            Console.WriteLine("         Player Wait Time (Avg): " + ((long)results.WaitTimeAverage).ClockFormat());
+            Console.WriteLine("      Player Wait Time (StdDev): " + ((long)results.WaitTimeStandardDeviation).ClockFormat());
+            Console.WriteLine();
+            Console.WriteLine("             Match Length (Avg): " + ((long)results.MatchLengthAverage).ClockFormat());
             Console.WriteLine();
             Console.WriteLine("              Heavy Count (Avg): " + results.HeavyCountAverage.ToString());
             Console.WriteLine("             Medium Count (Avg): " + results.MediumCountAverage.ToString());

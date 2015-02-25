@@ -60,7 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\InOrderCreation.cs" />
     <Compile Include="Core\Pool.cs" />
     <Compile Include="Core\Probability\ExponentialDistribution.cs" />
     <Compile Include="Core\Probability\NormalDistribution.cs" />
@@ -80,8 +79,8 @@
     <Compile Include="Simulation.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="TankDb.cs" />
-    <Compile Include="Core\BinarySearchTree.cs" />
     <Compile Include="Core\IEquatable.cs" />
+    <Compile Include="Algorithms\Wargaming.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

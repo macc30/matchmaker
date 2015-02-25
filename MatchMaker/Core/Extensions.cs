@@ -6,6 +6,43 @@ namespace MatchMaker.Core
 {
     public static class Extensions
     {
+        public static double MS_PER_SECOND = 1000.0;
+        public static double MS_PER_MINUTE = 60.0 * 1000.0;
+        public static double MS_PER_HOUR = 60.0 * 60.0 * 1000.0;
+
+        public static String ClockFormat(this long clock_value)
+        {
+            if (clock_value < MS_PER_SECOND)
+            {
+                return String.Format("{0} ms", clock_value);
+            }
+            else if (clock_value < MS_PER_MINUTE)
+            {
+                return String.Format("{0}.{1} sec", Math.Floor((double)clock_value / 1000.0), clock_value % 1000);
+            }
+            else if (clock_value < MS_PER_HOUR)
+            {
+                var minutes = Math.Floor((clock_value) / MS_PER_MINUTE);
+                var minutes_in_ms = minutes * MS_PER_MINUTE;
+                var seconds = Math.Floor((clock_value - minutes_in_ms) / MS_PER_SECOND);
+                var seconds_in_ms = seconds * MS_PER_SECOND;
+                var ms = clock_value - minutes_in_ms - seconds_in_ms;
+                return String.Format("{0} min {1}.{2} sec", minutes, seconds, ms);
+            }
+            else
+            {
+                var hours = Math.Floor((double)clock_value / MS_PER_HOUR);
+                var hours_in_ms = hours * MS_PER_HOUR;
+                var minutes = Math.Floor((clock_value - hours_in_ms) / MS_PER_MINUTE);
+                var minutes_in_ms = minutes * MS_PER_MINUTE;
+                var seconds = Math.Floor((clock_value - hours_in_ms - minutes_in_ms) / MS_PER_SECOND);
+                var seconds_in_ms = seconds * MS_PER_SECOND;
+                var ms = clock_value - hours_in_ms - minutes_in_ms - seconds_in_ms;
+
+                return String.Format("{0} hr {1} min {2}.{3} sec", hours, minutes, seconds, ms);
+            }
+        }
+
         public static T PopFront<T>(this List<T> values)
         {
             if (values.Any())

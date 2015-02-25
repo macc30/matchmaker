@@ -26,6 +26,8 @@ namespace MatchMaker.Models
 
         public Int32 Tier { get; set; }
 
+        public Boolean PreferentialMM { get; set; }
+
         public Int32 Health { get; set; }
 
         public Double Popularity { get; set; }
