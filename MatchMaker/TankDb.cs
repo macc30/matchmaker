@@ -36,7 +36,26 @@ namespace MatchMaker
             }
         }
 
+        public Tank this[int id]
+        {
+            get
+            {
+                return _tank_by_id_map[id];
+            }
+            set
+            {
+                _tank_by_id_map[id] = value;
+            }
+        }
+
+        public Boolean ContainsWgId(int id)
+        {
+            return _tank_by_id_map.ContainsKey(id);
+        }
+
         public List<Tank> Tanks { get; set; }
+
+        private Dictionary<Int32, Tank> _tank_by_id_map = new Dictionary<Int32, Tank>();
 
         public Tank RandomTank()
         {
@@ -59,6 +78,7 @@ namespace MatchMaker
             }
 
             this.Tanks = tank_lookup.Values.OrderBy(_ => _.Id).ToList();
+            this._tank_by_id_map = this.Tanks.ToDictionary(_ => _.WG_ID);
         }
 
         public void SaveToFile(String filename)
@@ -71,6 +91,7 @@ namespace MatchMaker
         {
             var json_text = System.IO.File.ReadAllText(filename);
             this.Tanks = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Tank>>(json_text);
+            this._tank_by_id_map = this.Tanks.ToDictionary(_ => _.WG_ID);
         }
 
         private Dictionary<Int32, Tank> _buildTankList(String json)

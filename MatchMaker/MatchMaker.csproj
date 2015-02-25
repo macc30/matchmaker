@@ -80,6 +80,8 @@
     <Compile Include="Simulation.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="TankDb.cs" />
+    <Compile Include="Core\BinarySearchTree.cs" />
+    <Compile Include="Core\IEquatable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

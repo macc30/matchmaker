@@ -61,9 +61,9 @@ namespace MatchMaker.Core
                 cumulative_weights.Add(running_total);
             }
 
-            randomProvider = randomProvider ?? new Random();
+            randomProvider = randomProvider ?? new Random(); //this is fine for one off calls, but for repeated calls close to eachother use a random provider.
             var normalized_value = randomProvider.NextDouble();
-            for (var x = 0; x < cumulative_weights.Count; x++) //a bst here would be best.
+            for (var x = 0; x < cumulative_weights.Count; x++) //a bst here would be better.
             {
                 if (normalized_value < cumulative_weights[x])
                 {
