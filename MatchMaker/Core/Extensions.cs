@@ -48,28 +48,22 @@ namespace MatchMaker.Core
             values.Add(value);
         }
 
-        public static T WeightedRandom<T>(this List<T> values, Func<T, Double> weightSelector, Random randomProvider = null)
+        public static T WeightedRandomSelection<T>(this List<T> values, Func<T, Double> weightSelector, Random randomProvider = null)
         {
             var total = values.Sum(_ => weightSelector(_));
-            var weights = new List<Double>();
+
+            var cumulative_weights = new List<Double>(capacity: values.Count);
+            var running_total = 0.0;
             for(var x = 0; x < values.Count; x++)
             {
-                var weight = weightSelector(values[x]);
-                var normalized = weight / total;
-                weights.Add(normalized);
-            }
-
-            var cumulative_weights = new List<Double>();
-            var running_total = 0.0;
-            foreach (var weight in weights)
-            {
-                running_total += weight;
+                var normalized_weight = weightSelector(values[x]) / total;
+                running_total += normalized_weight;
                 cumulative_weights.Add(running_total);
             }
 
             randomProvider = randomProvider ?? new Random();
             var normalized_value = randomProvider.NextDouble();
-            for (var x = 0; x < values.Count; x++)
+            for (var x = 0; x < cumulative_weights.Count; x++) //a bst here would be best.
             {
                 if (normalized_value < cumulative_weights[x])
                 {

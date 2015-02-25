@@ -20,6 +20,7 @@ namespace MatchMaker.Test
         [Test]
         public void WeightedAverage_Test()
         {
+            var randomProvider = new Random();
             var objects = new List<WeightedObject>()
             {
                 new WeightedObject() { Name = "Foo", Weight = 8 },
@@ -29,11 +30,11 @@ namespace MatchMaker.Test
 
             var strings = new List<String>();
 
-            for(var x = 0; x < 1000; x++)
+            1000.Times(() =>
             {
-                var weighted_selection = objects.WeightedRandom(_ => _.Weight);
+                var weighted_selection = objects.WeightedRandomSelection(_ => _.Weight, randomProvider: randomProvider);
                 strings.Add(weighted_selection.Name);
-            }
+            });
 
             var foo_count = strings.Count(_ => _.Equals("Foo"));
             var bar_count = strings.Count(_ => _.Equals("Bar"));
