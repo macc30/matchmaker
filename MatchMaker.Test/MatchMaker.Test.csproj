@@ -51,6 +51,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionTests.cs" />
     <Compile Include="PoolTests.cs" />
     <Compile Include="ProbabilityTests.cs" />
   </ItemGroup>

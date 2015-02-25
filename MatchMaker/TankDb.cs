@@ -43,7 +43,6 @@ namespace MatchMaker
             return Tanks.OrderBy(_ => System.Guid.NewGuid()).First();
         }
 
-
         public void InitializeFromWeb()
         {
             var tank_list_json = _fetchJSONText(TANK_LIST_ENDPOINT);

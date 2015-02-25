@@ -48,6 +48,38 @@ namespace MatchMaker.Core
             values.Add(value);
         }
 
+        public static T WeightedRandom<T>(this List<T> values, Func<T, Double> weightSelector, Random randomProvider = null)
+        {
+            var total = values.Sum(_ => weightSelector(_));
+            var weights = new List<Double>();
+            for(var x = 0; x < values.Count; x++)
+            {
+                var weight = weightSelector(values[x]);
+                var normalized = weight / total;
+                weights.Add(normalized);
+            }
+
+            var cumulative_weights = new List<Double>();
+            var running_total = 0.0;
+            foreach (var weight in weights)
+            {
+                running_total += weight;
+                cumulative_weights.Add(running_total);
+            }
+
+            randomProvider = randomProvider ?? new Random();
+            var normalized_value = randomProvider.NextDouble();
+            for (var x = 0; x < values.Count; x++)
+            {
+                if (normalized_value < cumulative_weights[x])
+                {
+                    return values[x];
+                }
+            }
+
+            return values.Last();
+        }
+
         public static void Times(this Int32 value, Action block)
         {
             for (int x = 0; x < value; x++)
